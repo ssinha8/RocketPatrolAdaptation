@@ -118,7 +118,7 @@ class Play extends Phaser.Scene {
         // simple AABB checking
         if (Screw.x < balloon.x + balloon.width && 
             Screw.x + Screw.width > balloon.x && 
-            Screw.y < balloon.y + balloon.height &&
+            Screw.y < balloon.y + balloon.height - 21 &&
             Screw.height + Screw.y > balloon. y) {
                 return true;
         } else {
