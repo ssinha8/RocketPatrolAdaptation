@@ -4,10 +4,10 @@ class Menu extends Phaser.Scene {
     }
 
     preload() {
-        // load audio
-        this.load.audio('sfx_select', './assets/blip_select12.wav');
+        // load audio: TODO
+        /* this.load.audio('sfx_select', './assets/blip_select12.wav');
         this.load.audio('sfx_explosion', './assets/explosion38.wav');
-        this.load.audio('sfx_rocket', './assets/rocket_shot.wav');
+        this.load.audio('sfx_rocket', './assets/rocket_shot.wav'); */
     }
 
     create() {
@@ -25,8 +25,8 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         }
         
-        // show menu text
-        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5);
+        // show menu text TODO -- REWORK MENU
+        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'BALLOON POP', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2, 'Use ←→ arrows to move & (F) to fire', menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor = '#00FF00';
         menuConfig.color = '#000';
@@ -41,19 +41,19 @@ class Menu extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
           // Novice mode
           game.settings = {
-            spaceshipSpeed: 3,
+            balloonSpeed: 3,
             gameTimer: 60000    
           }
-          this.sound.play('sfx_select');
+          // this.sound.play('sfx_select');
           this.scene.start("playScene");    
         }
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
           // Expert mode
           game.settings = {
-            spaceshipSpeed: 4,
+            balloonSpeed: 4,
             gameTimer: 45000    
           }
-          this.sound.play('sfx_select');
+          // this.sound.play('sfx_select');
           this.scene.start("playScene");    
         }
       }
