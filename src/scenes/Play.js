@@ -6,9 +6,11 @@ class Play extends Phaser.Scene {
     preload() {
         // load images/tile sprites
         this.load.image('screw', './assets/screw.png');
-        this.load.image('balloon', './assets/BlueBalloon.png');
+        this.load.image('blue balloon', './assets/BlueBalloon.png');
+        this.load.image('green balloon', './assets/GreenBalloon.png');
+        this.load.image('red balloon', './assets/RedBalloon.png');
         this.load.image('clouds', './assets/clouds.png');
-        this.load.image('buildings', './assets/buildings.png');
+        this.load.image('buildings', './assets/building.png');
         // load spritesheetScrew
         // this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
     }
@@ -30,9 +32,9 @@ class Play extends Phaser.Scene {
         this.p1Screw = new Screw(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'screw').setOrigin(0.5, 0);
 
         // add Balloons (x3)
-        this.balloon01 = new Balloon(this, game.config.width + borderUISize*6, borderUISize*4, 'balloon', 0, 30).setOrigin(0, 0);
-        this.balloon02 = new Balloon(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'balloon', 0, 20).setOrigin(0,0);
-        this.balloon03 = new Balloon(this, game.config.width, borderUISize*6 + borderPadding*4, 'balloon', 0, 10).setOrigin(0,0);
+        this.balloon01 = new Balloon(this, game.config.width + borderUISize*6, borderUISize*4, 'red balloon', 0, 30).setOrigin(0, 0);
+        this.balloon02 = new Balloon(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'green balloon', 0, 20).setOrigin(0,0);
+        this.balloon03 = new Balloon(this, game.config.width, borderUISize*6 + borderPadding*4, 'blue balloon', 0, 10).setOrigin(0,0);
 
         // define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
