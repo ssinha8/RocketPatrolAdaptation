@@ -49,8 +49,9 @@ class Play extends Phaser.Scene {
         //     frameRate: 30
         // });
 
-        // initialize score
+        // initialize score and a variable to track timer
         this.p1Score = 0;
+        this.countdown = 5//game.settings.gameTimer/1000;
 
         // display score
         let scoreConfig = {
@@ -66,21 +67,29 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+        this.timerLeft = this.add.text(borderUISize + borderPadding + 400, borderUISize + borderPadding, this.countdown, scoreConfig); // edit stylizing
 
         // GAME OVER flag
         this.gameOver = false;
 
         // 60-second play clock
         scoreConfig.fixedWidth = 0;
-        this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
-            this.gameOver = true;
-        }, null, this);
+        this.clock = this.time.addEvent({
+            delay: 1000,
+            callback: this.timeCounter,
+            callbackScope: this,
+            loop: true
+        });
+        // this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
+        //     this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
+        //     this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
+        //     this.gameOver = true;
+        // }, null, this);
     }
 
     update() {
         // check key input for restart / menu
+
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
         }
@@ -91,7 +100,7 @@ class Play extends Phaser.Scene {
         
 
         // parallax scrolling
-        this.clouds.tilePositionX += 3;  // update background
+        this.clouds.tilePositionX += 4;  // update background
         this.buildings.tilePositionX += 1;  // update foreground
 
         if(!this.gameOver) {
@@ -104,15 +113,31 @@ class Play extends Phaser.Scene {
         // check collisions
         if(this.checkCollision(this.p1Screw, this.balloon03)) {
             this.p1Screw.reset();
+            this.countdown += 1;
             this.balloonExplode(this.balloon03);
         }
         if (this.checkCollision(this.p1Screw, this.balloon02)) {
             this.p1Screw.reset();
+            this.countdown += 2;
             this.balloonExplode(this.balloon02);
         }
         if (this.checkCollision(this.p1Screw, this.balloon01)) {
             this.p1Screw.reset();
+            this.countdown += 3;
             this.balloonExplode(this.balloon01);
+        }
+
+        // displays Countdown Timer
+        this.timerLeft.setText((Math.floor(this.countdown)).toString());
+    }
+
+    timeCounter() {
+        this.countdown -= 1;
+        if (this.countdown <= 0) {
+            this.time.removeEvent(this.clock);
+            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
+            this.gameOver = true;
         }
     }
 
