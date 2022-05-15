@@ -16,6 +16,7 @@ class Play extends Phaser.Scene {
     create() {
         // place tile sprite
         this.clouds = this.add.tileSprite(0, 0, 640, 480, 'clouds').setOrigin(0, 0);
+        this.buildings = this.add.tileSprite(0, 120, 640, 360, 'buildings').setOrigin(0, 0);
 
         // green UI background
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
@@ -85,8 +86,11 @@ class Play extends Phaser.Scene {
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
         }
+        
 
-        this.clouds.tilePositionX -= 4;  // update tile sprite
+        // parallax scrolling
+        this.clouds.tilePositionX += 3;  // update background
+        this.buildings.tilePositionX += 1;  // update foreground
 
         if(!this.gameOver) {
             this.p1Screw.update();             // update p1
