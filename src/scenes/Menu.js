@@ -52,7 +52,7 @@ class Menu extends Phaser.Scene {
           // Novice mode
           game.settings = {
             balloonSpeed: 3,
-            gameTimer: 10000    
+            gameTimer: 60000    
           }
           this.sound.play('sfx_select');
           this.scene.start("playScene");    
