@@ -6,22 +6,22 @@ class Screw extends Phaser.GameObjects.Sprite {
         scene.add.existing(this);   // add to existing, displayList, updateList
         this.isFiring = false;      // track screw's firing status
         this.moveSpeed = 2;         // pixels per frame
-        // this.sfxRocket = scene.sound.add('sfx_rocket')  // TODO: ADD SOUND
+        this.sfxScrew = scene.sound.add('sfx_screw') 
     }
 
     update() {
         // left/right movement
         if(!this.isFiring) {
-            if(keyLEFT.isDown && this.x >= borderUISize + this.width) {
+            if((keyLEFT.isDown || cursor.x < this.x) && this.x >= borderUISize + this.width) {
                 this.x -= this.moveSpeed;
-            } else if (keyRIGHT.isDown && this.x <= game.config.width - borderUISize - this.width) {
+            } else if ((keyRIGHT.isDown || cursor.x > this.x) && this.x <= game.config.width - borderUISize - this.width) {
                 this.x += this.moveSpeed;
-            }
+            } 
         }
         // fire button
-        if(Phaser.Input.Keyboard.JustDown(keyF) && !this.isFiring) {
+        if((Phaser.Input.Keyboard.JustDown(keyF) || cursor.isDown) && !this.isFiring) {
             this.isFiring = true;
-            // this.sfxRocket.play();
+            this.sfxScrew.play();
         }
         // if fired, move up
         if(this.isFiring && this.y >= borderUISize * 3 + borderPadding) {

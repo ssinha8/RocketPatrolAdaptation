@@ -11,8 +11,8 @@ class Play extends Phaser.Scene {
         this.load.image('red balloon', './assets/RedBalloon.png');
         this.load.image('clouds', './assets/clouds.png');
         this.load.image('buildings', './assets/building.png');
-        // load spritesheetScrew
-        // this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
+        // load spritesheet
+        this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 18, frameHeight: 20, startFrame: 0, endFrame: 5});
     }
 
     create() {
@@ -20,13 +20,13 @@ class Play extends Phaser.Scene {
         this.clouds = this.add.tileSprite(0, 0, 640, 480, 'clouds').setOrigin(0, 0);
         this.buildings = this.add.tileSprite(0, 120, 640, 360, 'buildings').setOrigin(0, 0);
 
-        // green UI background
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
-        // white borders
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
+        // Dark Green UI background
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x162521).setOrigin(0, 0);
+        // light blue borders
+        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xC0E0DE).setOrigin(0 ,0);
+        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xC0E0DE).setOrigin(0 ,0);
+        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xC0E0DE).setOrigin(0 ,0);
+        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xC0E0DE).setOrigin(0 ,0);
 
         // add Screw (p1)
         this.p1Screw = new Screw(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'screw').setOrigin(0.5, 0);
@@ -41,50 +41,44 @@ class Play extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        cursor = this.input.mousePointer;
 
-        // animation config - TODO:
-        // this.anims.create({
-        //     key: 'explode',
-        //     frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
-        //     frameRate: 30
-        // });
+        // animation config:
+        this.anims.create({
+            key: 'explode',
+            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 5, first: 0}),
+            frameRate: 30
+        });
 
-        // initialize score and a variable to track timer
+        // initialize score
         this.p1Score = 0;
-        this.countdown = 5//game.settings.gameTimer/1000;
 
         // display score
         let scoreConfig = {
-            fontFamily: 'Courier',
+            fontFamily: 'Tahoma',
             fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
-            align: 'right',
+            backgroundColor: '#4F7CAC',
+            color: '#3C474B',
+            align: 'center',
             padding: {
                 top: 5,
                 bottom: 5,
             },
-            fixedWidth: 100
+            fixedWidth: 120
         }
-        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
-        this.timerLeft = this.add.text(borderUISize + borderPadding + 400, borderUISize + borderPadding, this.countdown, scoreConfig); // edit stylizing
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, "Score: " + this.p1Score, scoreConfig);
+        this.timerLeft = this.add.text(borderUISize + borderPadding + 400, borderUISize + borderPadding*2, "Time: " + game.settings.gameTimer, scoreConfig); 
 
         // GAME OVER flag
         this.gameOver = false;
 
-        // 60-second play clock
+        // variable play clock based on novice or expert mode
         scoreConfig.fixedWidth = 0;
-        this.clock = this.time.addEvent({
-            delay: 1000,
-            callback: this.timeCounter,
-            callbackScope: this,
-            loop: true
-        });
-        // this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-        //     this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-        //     this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
-        //     this.gameOver = true;
-        // }, null, this);
+        this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
+            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
+            this.gameOver = true;
+        }, null, this);
     }
 
     update() {
@@ -113,36 +107,23 @@ class Play extends Phaser.Scene {
         // check collisions
         if(this.checkCollision(this.p1Screw, this.balloon03)) {
             this.p1Screw.reset();
-            this.countdown += 1;
             this.balloonExplode(this.balloon03);
         }
         if (this.checkCollision(this.p1Screw, this.balloon02)) {
             this.p1Screw.reset();
-            this.countdown += 2;
             this.balloonExplode(this.balloon02);
         }
         if (this.checkCollision(this.p1Screw, this.balloon01)) {
             this.p1Screw.reset();
-            this.countdown += 3;
             this.balloonExplode(this.balloon01);
         }
 
         // displays Countdown Timer
-        this.timerLeft.setText((Math.floor(this.countdown)).toString());
-    }
-
-    timeCounter() {
-        this.countdown -= 1;
-        if (this.countdown <= 0) {
-            this.time.removeEvent(this.clock);
-            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
-            this.gameOver = true;
-        }
+        this.timerLeft.setText("Time: " + Math.floor((1-this.clock.getProgress())*(game.settings.gameTimer/1000)).toString());
     }
 
     checkCollision(Screw, balloon) {
-        // simple AABB checking
+        // simple logic for collision checking 
         if (Screw.x < balloon.x + balloon.width && 
             Screw.x + Screw.width > balloon.x && 
             Screw.y < balloon.y + balloon.height - 21 &&
@@ -157,23 +138,17 @@ class Play extends Phaser.Scene {
         // temporarily hide balloon
         balloon.alpha = 0;                         
         // create explosion sprite at balloon's position
-        // let boom = this.add.sprite(balloon.x, balloon.y, 'explosion').setOrigin(0, 0);
-        // boom.anims.play('explode');             // play explode animation
-        // boom.on('animationcomplete', () => {    // callback after anim completes
-        //     balloon.reset();                         // reset balloon position
-        //     balloon.alpha = 1;                       // make balloon visible again
-        //     boom.destroy();                       // remove explosion sprite
-        // });
-        // score add and repaint
-
-        // REMOVE LATER FOR TESTING ONLY
-        balloon.reset();
-        balloon.alpha = 1;
-
-
+        let boom = this.add.sprite(balloon.x, balloon.y, 'explosion').setOrigin(0, 0);
+        boom.anims.play('explode');             // play explode animation
+        boom.on('animationcomplete', () => {    // callback after anim completes
+            balloon.reset();                         // reset balloon position
+            balloon.alpha = 1;                       // make balloon visible again
+            boom.destroy();                       // remove explosion sprite
+        });
+        // add to score and display
         this.p1Score += balloon.points;
-        this.scoreLeft.text = this.p1Score; 
+        this.scoreLeft.text = "Score: " + this.p1Score; 
         
-        //this.sound.play('sfx_explosion');
+        this.sound.play('sfx_explosion');
       }
 }
